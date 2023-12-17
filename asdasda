@@ -1,5 +1,3 @@
-
-
 -- Ensure the game is loaded 
 if not game:IsLoaded() then
 	game.Loaded:Wait()
@@ -103,13 +101,19 @@ local siriusValues = {
 		},
 		CDID = {
 			name = "Car Driving Indonesia",
-			description = "Drive around indonesia with the best cars. Execute this script to gain an unfair advantage.",
-			id = 6911148748, 9233343468, 9508940498, 14005966837,
-			enabled = true,
+			description = "Drive around Indonesia with the best cars. Execute this script to gain an unfair advantage.",
+			id = 6911148748, 
+			enabled = false,
 			raw = "CDID",
 			minimumTier = "Pro",
-		}
-
+			checkID = function(self)
+				if self.id == 6911148748 or self.id == 9233343468 or self.id == 14005966837 then
+					self.enabled = true
+				end
+			end
+		},
+		
+		
 	},
 	rawTree = "https://raw.githubusercontent.com/SiriusSoftwareLtd/Sirius/Sirius/games/",
 	neonModule = "https://raw.githubusercontent.com/shlexware/Sirius/request/library/neon.lua",
@@ -453,12 +457,6 @@ local siriusSettings = {
 				id = 'smartbar'
 			},
 			{
-				name = 'Open ScriptSearch',
-				settingType = 'Key',
-				current = "T",
-				id = 'scriptsearch'
-			},
-			{
 				name = 'NoClip',
 				settingType = 'Key',
 				current = nil,
@@ -740,7 +738,7 @@ local moderatorDetectionPrompt = UI.ModeratorDetectionPrompt
 local musicPanel = UI.Music
 local notificationContainer = UI.Notifications
 local playerlistPanel = UI.Playerlist
-local scriptSearch = UI.ScriptSearch
+local Autofarm = UI.Autofarm
 local scriptsPanel = UI.Scripts
 local settingsPanel = UI.Settings
 local smartBar = UI.SmartBar
@@ -1187,13 +1185,13 @@ end
 
 local function blurSignature(value)
 	if not value then
-		if lighting:FindFirstChild("SiriusBlur") then
-			lighting:FindFirstChild("SiriusBlur"):Destroy()
+		if lighting:FindFirstChild("CreamyBlur") then
+			lighting:FindFirstChild("CreamyBlur"):Destroy()
 		end
 	else
-		if not lighting:FindFirstChild("SiriusBlur") then
+		if not lighting:FindFirstChild("CreamyBlur") then
 			local blurLight = Instance.new("DepthOfFieldEffect", lighting)
-			blurLight.Name = "SiriusBlur"
+			blurLight.Name = "CreamyBlur"
 			blurLight.Enabled = true
 			blurLight.FarIntensity = 0
 			blurLight.FocusDistance = 51.6
@@ -1327,7 +1325,7 @@ local function checkLastVersion()
 	local lastVersion = isfile and isfile(siriusValues.siriusFolder.."/".."version.srs") and readfile(siriusValues.siriusFolder.."/".."version.srs") or nil
 
 	if lastVersion then
-		if lastVersion ~= siriusValues.siriusVersion then queueNotification("Sirius has been updated", "Sirius has been updated to version "..siriusValues.siriusVersion..", check our Discord for all new features and changes.", 4400701828)  end
+		if lastVersion ~= siriusValues.siriusVersion then queueNotification("Creamy has been updated", "Creamy has been updated to version "..siriusValues.siriusVersion..", check our Discord for all new features and changes.", 4400701828)  end
 	end
 
 	if writefile then writefile(siriusValues.siriusFolder.."/".."version.srs", siriusValues.siriusVersion) end
@@ -1707,7 +1705,7 @@ local function sortActions()
 			end)
 
 			if not success then
-				queueNotification("Action Error", "This action ('"..(action.name).."') had an error while running, please report this to the Sirius team at sirius.menu/discord", 4370336704)
+				queueNotification("Action Error", "This action ('"..(action.name).."') had an error while running, please report this to the Creamy team at https://discord.gg/qDPBZMBSnB", 4370336704)
 				action.enabled = false
 				newAction.Icon.Image = "rbxassetid://"..action.images[2]
 				tweenService:Create(newAction, TweenInfo.new(0.4, Enum.EasingStyle.Exponential), {BackgroundTransparency = 0.55}):Play()
@@ -2154,7 +2152,7 @@ local function ensureFrameProperties()
 	musicPanel.Visible = false
 	notificationContainer.Visible = true
 	playerlistPanel.Visible = false
-	scriptSearch.Visible = false
+	Autofarm.Visible = false
 	scriptsPanel.Visible = false
 	settingsPanel.Visible = false
 	smartBar.Visible = false
@@ -2514,378 +2512,6 @@ local function closeHome()
 	debounce = false
 end
 
-
-local function openScriptSearch()
-	debounce = true
-
-	scriptSearch.Size = UDim2.new(0, 480, 0, 23)
-	scriptSearch.Position = UDim2.new(0.5, 0, 0.5, 0)
-	scriptSearch.SearchBox.Position = UDim2.new(0.509, 0, 0.5, 0)
-	scriptSearch.Icon.Position = UDim2.new(0.04, 0, 0.5, 0)
-	scriptSearch.SearchBox.Text = ""
-	scriptSearch.UIGradient.Offset = Vector2.new(0, 2)
-	scriptSearch.SearchBox.PlaceholderText = "Search ScriptBlox.com"
-	scriptSearch.List.Template.Visible = false
-	scriptSearch.List.Visible = false
-	scriptSearch.Visible = true
-
-	wipeTransparency(scriptSearch, 1, true)
-
-	tweenService:Create(scriptSearch, TweenInfo.new(.5,Enum.EasingStyle.Quint),  {BackgroundTransparency = 0}):Play()
-	tweenService:Create(scriptSearch, TweenInfo.new(.5,Enum.EasingStyle.Quint),  {Size = UDim2.new(0, 580, 0, 43)}):Play()
-	tweenService:Create(scriptSearch.Shadow, TweenInfo.new(.5,Enum.EasingStyle.Quint),  {ImageTransparency = 0.85}):Play()
-	task.wait(0.03)
-	tweenService:Create(scriptSearch.Icon, TweenInfo.new(.5,Enum.EasingStyle.Quint),  {ImageTransparency = 0}):Play()
-	task.wait(0.02)
-	tweenService:Create(scriptSearch.SearchBox, TweenInfo.new(.5,Enum.EasingStyle.Quint),  {TextTransparency = 0}):Play()
-
-
-	task.wait(0.3)
-	scriptSearch.SearchBox:CaptureFocus()
-	task.wait(0.2)
-	debounce = false
-end
-
-local function closeScriptSearch()
-	debounce = true
-
-	wipeTransparency(scriptSearch, 1, false)
-
-	task.wait(0.1)
-
-	scriptSearch.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
-	scriptSearch.UIGradient.Enabled = false
-	tweenService:Create(scriptSearch, TweenInfo.new(0.4, Enum.EasingStyle.Quint),  {Size = UDim2.new(0, 520, 0, 0)}):Play()
-	scriptSearch.SearchBox:ReleaseFocus()
-
-	task.wait(0.5)
-
-	for _, createdScript in ipairs(scriptSearch.List:GetChildren()) do
-		if createdScript.Name ~= "Placeholder" and createdScript.Name ~= "Template" and createdScript.ClassName == "Frame" then
-			createdScript:Destroy()
-		end
-	end
-
-	task.wait(0.1)
-	scriptSearch.BackgroundColor3 = Color3.fromRGB(255 ,255, 255)
-	scriptSearch.Visible = false
-	scriptSearch.UIGradient.Enabled = true
-	debounce = false
-end
-
-local function createScript(result)
-	local newScript = UI.ScriptSearch.List.Template:Clone()
-	newScript.Name = result.title
-	newScript.Parent = UI.ScriptSearch.List
-	newScript.Visible = true
-
-	for _, tag in ipairs(newScript.Tags:GetChildren()) do
-		if tag.ClassName == "Frame" then
-			tag.Shadow.ImageTransparency = 1
-			tag.BackgroundTransparency = 1
-			tag.Title.TextTransparency = 1
-		end
-	end
-
-	task.spawn(function()
-		local response
-
-		local success, ErrorStatement = pcall(function()
-			local responseRequest = httpRequest({
-				Url = "https://www.scriptblox.com/api/script/"..result['slug'],
-				Method = "GET"
-			})
-
-			response = httpService:JSONDecode(responseRequest.Body)
-		end)
-
-		newScript.ScriptDescription.Text = response.script.features
-
-		local likes = response.script.likeCount
-		local dislikes = response.script.dislikeCount
-
-		if likes ~= dislikes then
-			newScript.Tags.Review.Title.Text = (likes > dislikes) and "Positive Reviews" or "Negative Reviews"
-			newScript.Tags.Review.BackgroundColor3 = (likes > dislikes) and Color3.fromRGB(0, 139, 102) or Color3.fromRGB(180, 0, 0)
-			newScript.Tags.Review.Size = (likes > dislikes) and UDim2.new(0, 145, 1, 0) or UDim2.new(0, 150, 1, 0)
-		elseif likes > 0 then
-			newScript.Tags.Review.Title.Text = "Mixed Reviews"
-			newScript.Tags.Review.BackgroundColor3 = Color3.fromRGB(198, 132, 0)
-			newScript.Tags.Review.Size = UDim2.new(0, 130, 1, 0)
-		else
-			newScript.Tags.Review.Visible = false
-		end
-
-		newScript.ScriptAuthor.Text = "uploaded by "..response.script.owner.username
-		newScript.Tags.Verified.Visible = response.script.owner.verified or false
-
-		tweenService:Create(newScript, TweenInfo.new(.5, Enum.EasingStyle.Quint),  {BackgroundTransparency = 0.8}):Play()
-		tweenService:Create(newScript.ScriptName, TweenInfo.new(.5, Enum.EasingStyle.Quint),  {TextTransparency = 0}):Play()
-		tweenService:Create(newScript.Execute, TweenInfo.new(.5, Enum.EasingStyle.Quint),  {BackgroundTransparency = 0.8}):Play()
-		tweenService:Create(newScript.Execute, TweenInfo.new(.5, Enum.EasingStyle.Quint),  {TextTransparency = 0}):Play()
-
-		newScript.Tags.Visible = true
-
-		tweenService:Create(newScript.ScriptDescription, TweenInfo.new(.5,Enum.EasingStyle.Quint),  {TextTransparency = 0.3}):Play()
-		tweenService:Create(newScript.ScriptAuthor, TweenInfo.new(.5, Enum.EasingStyle.Quint),  {TextTransparency = 0.7}):Play()
-
-		for _, tag in ipairs(newScript.Tags:GetChildren()) do
-			if tag.ClassName == "Frame" then
-				tweenService:Create(tag.Shadow, TweenInfo.new(.5, Enum.EasingStyle.Quint),  {ImageTransparency = 0.7}):Play()
-				tweenService:Create(tag, TweenInfo.new(.5, Enum.EasingStyle.Quint),  {BackgroundTransparency = 0}):Play()
-				tweenService:Create(tag.Title, TweenInfo.new(.5, Enum.EasingStyle.Quint),  {TextTransparency = 0}):Play()
-			end
-		end
-	end)
-
-	wipeTransparency(newScript, 1, true)
-
-	newScript.ScriptName.Text = result.title
-
-
-	newScript.Tags.Visible = false
-	newScript.Tags.Patched.Visible = result.isPatched or false
-
-	newScript.Execute.MouseButton1Click:Connect(function()
-		queueNotification("ScriptSearch", "Running "..result.title.. " via ScriptSearch" , 4384403532)
-		closeScriptSearch()
-		loadstring(result.script)()
-	end)
-end
-
-local function extractDomain(link)
-	local domainToReturn = link:match("([%w-_]+%.[%w-_%.]+)")
-	return domainToReturn
-end
-
-local function securityDetection(title, content, link, gradient, actions)
-	if not checkSirius() then return end
-
-	local domain = extractDomain(link) or link
-	checkFolder()
-	local currentAllowlist = isfile and isfile(siriusValues.siriusFolder.."/".."allowedLinks.srs") and readfile(siriusValues.siriusFolder.."/".."allowedLinks.srs") or nil
-	if currentAllowlist then currentAllowlist = httpService:JSONDecode(currentAllowlist) if table.find(currentAllowlist, domain) then return true end end
-
-	local newSecurityPrompt = securityPrompt:Clone()
-
-	newSecurityPrompt.Parent = UI
-	newSecurityPrompt.Name = link
-
-	wipeTransparency(newSecurityPrompt, 1, true)
-	newSecurityPrompt.Size = UDim2.new(0, 478, 0, 150)
-
-	newSecurityPrompt.Title.Text = title
-	newSecurityPrompt.Subtitle.Text = content
-	newSecurityPrompt.FoundLink.Text = domain
-
-	newSecurityPrompt.Visible = true
-	newSecurityPrompt.UIGradient.Color = gradient
-
-	newSecurityPrompt.Buttons.Template.Visible = false
-
-	local function closeSecurityPrompt()
-		tweenService:Create(newSecurityPrompt, TweenInfo.new(0.52, Enum.EasingStyle.Quint),  {Size = UDim2.new(0, 500, 0, 165)}):Play()
-		tweenService:Create(newSecurityPrompt, TweenInfo.new(0.5, Enum.EasingStyle.Quint),  {BackgroundTransparency = 1}):Play()
-		tweenService:Create(newSecurityPrompt.Title, TweenInfo.new(0.5, Enum.EasingStyle.Quint),  {TextTransparency = 1}):Play()
-		tweenService:Create(newSecurityPrompt.Subtitle, TweenInfo.new(0.5, Enum.EasingStyle.Quint),  {TextTransparency = 1}):Play()
-		tweenService:Create(newSecurityPrompt.FoundLink, TweenInfo.new(0.5, Enum.EasingStyle.Quint),  {TextTransparency = 1}):Play()
-
-
-		for _, button in ipairs(newSecurityPrompt.Buttons:GetChildren()) do
-			if button.Name ~= "Template" and button.ClassName == "TextButton" then
-				tweenService:Create(button, TweenInfo.new(0.3, Enum.EasingStyle.Quint),  {BackgroundTransparency = 1}):Play()
-				tweenService:Create(button, TweenInfo.new(0.3, Enum.EasingStyle.Quint),  {TextTransparency = 1}):Play()
-			end
-		end
-		task.wait(0.55)
-		newSecurityPrompt:Destroy()
-	end
-
-	local decision
-
-	for _, action in ipairs(actions) do
-		local newAction = newSecurityPrompt.Buttons.Template:Clone()
-		newAction.Name = action[1]
-		newAction.Text = action[1]
-		newAction.Parent = newSecurityPrompt.Buttons
-		newAction.Visible = true
-		newAction.Size = UDim2.new(0, newAction.TextBounds.X + 50, 0, 36) -- textbounds
-
-		newAction.MouseButton1Click:Connect(function()
-			if action[2] then
-				if action[3] then
-					checkFolder()
-					if currentAllowlist then
-						table.insert(currentAllowlist, domain)
-						writefile(siriusValues.siriusFolder.."/".."allowedLinks.srs", httpService:JSONEncode(currentAllowlist))
-					else
-						writefile(siriusValues.siriusFolder.."/".."allowedLinks.srs", httpService:JSONEncode({domain}))
-					end
-				end
-				decision = true
-			else
-				decision = false
-			end
-
-			closeSecurityPrompt()
-		end)
-	end
-
-	tweenService:Create(newSecurityPrompt, TweenInfo.new(0.4, Enum.EasingStyle.Quint),  {Size = UDim2.new(0, 576, 0, 181)}):Play()
-	tweenService:Create(newSecurityPrompt, TweenInfo.new(0.5, Enum.EasingStyle.Quint),  {BackgroundTransparency = 0}):Play()
-	tweenService:Create(newSecurityPrompt.Title, TweenInfo.new(0.5, Enum.EasingStyle.Quint),  {TextTransparency = 0}):Play()
-	tweenService:Create(newSecurityPrompt.Subtitle, TweenInfo.new(0.5, Enum.EasingStyle.Quint),  {TextTransparency = 0.3}):Play()
-	task.wait(0.03)
-	tweenService:Create(newSecurityPrompt.FoundLink, TweenInfo.new(0.5, Enum.EasingStyle.Quint),  {TextTransparency = 0.2}):Play()
-
-	task.wait(0.1)
-
-	for _, button in ipairs(newSecurityPrompt.Buttons:GetChildren()) do
-		if button.Name ~= "Template" and button.ClassName == "TextButton" then
-			tweenService:Create(button, TweenInfo.new(0.5, Enum.EasingStyle.Quint),  {BackgroundTransparency = 0.7}):Play()
-			tweenService:Create(button, TweenInfo.new(0.5, Enum.EasingStyle.Quint),  {TextTransparency = 0.05}):Play()
-			task.wait(0.1)
-		end
-	end
-
-	newSecurityPrompt.FoundLink.MouseEnter:Connect(function()
-		newSecurityPrompt.FoundLink.Text = link
-		tweenService:Create(newSecurityPrompt.FoundLink, TweenInfo.new(0.5, Enum.EasingStyle.Quint),  {TextTransparency = 0.4}):Play()
-	end)
-
-	newSecurityPrompt.FoundLink.MouseLeave:Connect(function()
-		newSecurityPrompt.FoundLink.Text = domain
-		tweenService:Create(newSecurityPrompt.FoundLink, TweenInfo.new(0.5, Enum.EasingStyle.Quint),  {TextTransparency = 0.2}):Play()
-	end)
-
-	repeat task.wait() until decision
-	return decision
-end
-
-if Essential or Pro then
-	getgenv()[index] = function(data)
-		if checkSirius() and checkSetting("Intelligent HTTP Interception").current then
-			local title = "Do you trust this source?"
-			local content = "Sirius has prevented data from being sent off-client, would you like to allow data to be sent or retrieved from this source?"
-			local url = data.Url or "Unknown Link"
-			local gradient = ColorSequence.new({ColorSequenceKeypoint.new(0, Color3.new(0, 0, 0)),ColorSequenceKeypoint.new(1, Color3.new(0.764706, 0.305882, 0.0941176))})
-			local actions = {{"Always Allow", true, true}, {"Allow just this once", true}, {"Don't Allow", false}}
-
-			if url == "http://127.0.0.1:6463/rpc?v=1" then
-				local bodyDecoded = httpService:JSONDecode(data.Body)
-
-				if bodyDecoded.cmd == "INVITE_BROWSER" then
-					title = "Would you like to join this Discord server?"
-					content = "Sirius has prevented your Discord client from automatically joining this Discord server, would you like to continue and join, or block it?"
-					url = bodyDecoded.args and "discord.gg/"..bodyDecoded.args.code or "Unknown Invite"
-					gradient = ColorSequence.new({ColorSequenceKeypoint.new(0, Color3.new(0, 0, 0)),ColorSequenceKeypoint.new(1, Color3.new(0.345098, 0.396078, 0.94902))})
-					actions = {{"Allow", true}, {"Don't Allow", false}}
-				end
-			end
-
-			local answer = securityDetection(title, content, url, gradient, actions)
-
-
-			if answer then 
-				return originalRequest(data)
-			else
-				return
-			end
-		else
-			return originalRequest(data)
-		end
-	end
-
-	getgenv()[indexSetClipboard] = function(data)
-		if checkSirius() and checkSetting("Intelligent Clipboard Interception").current then
-			local title = "Would you like to copy this to your clipboard?"
-			local content = "Sirius has prevented a script from setting the below text to your clipboard, would you like to allow this, or prevent it from copying?"
-			local url = data or "Unknown Clipboard"
-			local gradient = ColorSequence.new({ColorSequenceKeypoint.new(0, Color3.new(0, 0, 0)),ColorSequenceKeypoint.new(1, Color3.new(0.776471, 0.611765, 0.529412))})
-			local actions = {{"Allow", true}, {"Don't Allow", false}}
-
-			local answer = securityDetection(title, content, url, gradient, actions)
-
-			if answer then 
-				return originalSetClipboard(data)
-			else
-				return
-			end
-		else
-			return originalSetClipboard(data)
-		end
-	end
-end
-
-
-local function searchScriptBlox(query)
-	local response
-
-	local success, ErrorStatement = pcall(function()
-		local responseRequest = httpRequest({
-			Url = "https://scriptblox.com/api/script/search?q="..httpService:UrlEncode(query).."&mode=free&max=20&page=1",
-			Method = "GET"
-		})
-
-		response = httpService:JSONDecode(responseRequest.Body)
-	end)
-
-	if not success then
-		queueNotification("ScriptSearch", "ScriptSearch backend encountered an error, try again later", 4384402990)
-		closeScriptSearch()
-		return
-	end
-
-	tweenService:Create(scriptSearch.NoScriptsTitle, TweenInfo.new(.5,Enum.EasingStyle.Quint),  {TextTransparency = 1}):Play()
-	tweenService:Create(scriptSearch.NoScriptsDesc, TweenInfo.new(.5,Enum.EasingStyle.Quint),  {TextTransparency = 1}):Play()
-
-	for _, createdScript in ipairs(scriptSearch.List:GetChildren()) do
-		if createdScript.Name ~= "Placeholder" and createdScript.Name ~= "Template" and createdScript.ClassName == "Frame" then
-			wipeTransparency(createdScript, 1, true)
-		end
-	end
-
-	scriptSearch.List.Visible = true
-	task.wait(0.5)
-
-	scriptSearch.List.CanvasPosition = Vector2.new(0,0)
-
-	for _, createdScript in ipairs(scriptSearch.List:GetChildren()) do
-		if createdScript.Name ~= "Placeholder" and createdScript.Name ~= "Template" and createdScript.ClassName == "Frame" then
-			createdScript:Destroy()
-		end
-	end
-
-	tweenService:Create(scriptSearch, TweenInfo.new(.5,Enum.EasingStyle.Quint),  {Size = UDim2.new(0, 580, 0, 529)}):Play()
-	tweenService:Create(scriptSearch.Icon, TweenInfo.new(.5,Enum.EasingStyle.Quint),  {Position = UDim2.new(0.054, 0, 0.056, 0)}):Play()
-	tweenService:Create(scriptSearch.SearchBox, TweenInfo.new(.5,Enum.EasingStyle.Quint),  {Position = UDim2.new(0.523, 0, 0.056, 0)}):Play()
-	tweenService:Create(scriptSearch.UIGradient, TweenInfo.new(.5,Enum.EasingStyle.Quint),  {Offset = Vector2.new(0, 0.6)}):Play()
-
-	if response then
-		local scriptCreated = false
-		for _, scriptResult in pairs(response.result.scripts) do
-			local success, response = pcall(function()
-				createScript(scriptResult)
-			end)
-
-			scriptCreated = true
-		end
-
-		if not scriptCreated then
-			task.wait(0.2)
-			tweenService:Create(scriptSearch.NoScriptsTitle, TweenInfo.new(.5,Enum.EasingStyle.Quint),  {TextTransparency = 0}):Play()
-			task.wait(0.1)
-			tweenService:Create(scriptSearch.NoScriptsDesc, TweenInfo.new(.5,Enum.EasingStyle.Quint),  {TextTransparency = 0}):Play()
-		else
-			tweenService:Create(scriptSearch.List, TweenInfo.new(.3,Enum.EasingStyle.Quint),  {ScrollBarImageTransparency = 0}):Play()
-		end
-	else
-		queueNotification("ScriptSearch", "ScriptSearch backend encountered an error, try again later", 4384402990)
-		closeScriptSearch()
-		return
-	end
-end
-
 local function openSmartBar()
 	smartBarOpen = true
 
@@ -3016,7 +2642,7 @@ local function onChatted(player, message)
 		get:Disconnect()
 
 		if hidden and enabled then
-			chatSpyVisuals.Text = "Sirius Spy - [".. player.Name .."]: "..message2
+			chatSpyVisuals.Text = "Creamy Spy - [".. player.Name .."]: "..message2
 			starterGui:SetCore("ChatMakeSystemMessage", chatSpyVisuals)
 		end
 	end
@@ -3481,7 +3107,7 @@ local function assembleSettings()
 					newSwitch.Interact.MouseButton1Click:Connect(function()
 						if minimumLicense then
 							if (minimumLicense == "Pro" and not Pro) or (minimumLicense == "Essential" and not (Pro or Essential)) then
-								queueNotification("This feature is locked", "You must be "..minimumLicense.." or higher to use "..setting.name..". \n\nUpgrade at https://sirius.menu.", 4483345875)
+								queueNotification("This feature is locked", "You must be "..minimumLicense.." or higher to use "..setting.name..". \n\nUpgrade at https://discord.gg/qDPBZMBSnB", 4483345875)
 								return
 							end
 						end
@@ -3532,7 +3158,7 @@ local function assembleSettings()
 					newInput.InputFrame.InputBox.FocusLost:Connect(function()
 						if minimumLicense then
 							if (minimumLicense == "Pro" and not Pro) or (minimumLicense == "Essential" and not (Pro or Essential)) then
-								queueNotification("This feature is locked", "You must be "..minimumLicense.." or higher to use "..setting.name..". \n\nUpgrade at https://sirius.menu.", 4483345875)
+								queueNotification("This feature is locked", "You must be "..minimumLicense.." or higher to use "..setting.name..". \n\nUpgrade at https://discord.gg/qDPBZMBSnB", 4483345875)
 								newInput.InputFrame.InputBox.Text = setting.current
 								return
 							end
@@ -3577,7 +3203,7 @@ local function assembleSettings()
 
 						if minimumLicense then
 							if (minimumLicense == "Pro" and not Pro) or (minimumLicense == "Essential" and not (Pro or Essential)) then
-								queueNotification("This feature is locked", "You must be "..minimumLicense.." or higher to use "..setting.name..". \n\nUpgrade at https://sirius.menu.", 4483345875)
+								queueNotification("This feature is locked", "You must be "..minimumLicense.." or higher to use "..setting.name..". \n\nUpgrade at https://discord.gg/qDPBZMBSnB", 4483345875)
 								newInput.InputFrame.InputBox.Text = setting.current
 								return
 							end
@@ -3636,7 +3262,7 @@ local function assembleSettings()
 
 						if minimumLicense then
 							if (minimumLicense == "Pro" and not Pro) or (minimumLicense == "Essential" and not (Pro or Essential)) then
-								queueNotification("This feature is locked", "You must be "..minimumLicense.." or higher to use "..setting.name..". \n\nUpgrade at https://sirius.menu.", 4483345875)
+								queueNotification("This feature is locked", "You must be "..minimumLicense.." or higher to use "..setting.name..". \n\nUpgrade at https://discord.gg/qDPBZMBSnB", 4483345875)
 								newKeybind.InputFrame.InputBox.Text = setting.current
 								return
 							end
@@ -3721,7 +3347,7 @@ local function initialiseAntiKick()
 
 			originalIndex = hookmetamethod(game, "__index", function(self, method)
 				if self == localPlayer and method:lower() == "kick" and checkSetting("Client-Based Anti Kick").current and checkSirius() then
-					queueNotification("Kick Prevented", "Sirius has prevented you from being kicked by the client.", 4400699701)
+					queueNotification("Kick Prevented", "Creamy has prevented you from being kicked by the client.", 4400699701)
 					return error("Expected ':' not '.' calling member function Kick", 2)
 				end
 				return originalIndex(self, method)
@@ -3729,7 +3355,7 @@ local function initialiseAntiKick()
 
 			originalNamecall = hookmetamethod(game, "__namecall", function(self, ...)
 				if self == localPlayer and getnamecallmethod():lower() == "kick" and checkSetting("Client-Based Anti Kick").current and checkSirius() then
-					queueNotification("Kick Prevented", "Sirius has prevented you from being kicked by the client.", 4400699701)
+					queueNotification("Kick Prevented", "Creamy has prevented you from being kicked by the client.", 4400699701)
 					return
 				end
 				return originalNamecall(self, ...)
@@ -3740,7 +3366,7 @@ end
 
 local function start()
 	if siriusValues.releaseType == "Experimental" then -- Make this more secure.
-		if not Pro then localPlayer:Kick("This is an experimental release, you must be Pro to run this. \n\nUpgrade at https://sirius.menu/") return end
+		if not Pro then localPlayer:Kick("This is an experimental release, you must be Pro to run this. \n\nUpgrade at https://discord.gg/qDPBZMBSnB") return end
 	end
 	windowFocusChanged(true)
 
@@ -3785,7 +3411,7 @@ local function start()
 	end
 
 	if script_key and not Essential and not Pro then
-		queueNotification("License Error", "We've detected a key being placed above Sirius loadstring, however your key seems to be invalid. Make a support request at sirius.menu/discord to get this solved within minutes.", "document-minus")
+		queueNotification("License Error", "We've detected a key being placed above Creamy Hub loadstring, however your key seems to be invalid. Make a support request at https://discord.gg/qDPBZMBSnB to get this solved within minutes.", "document-minus")
 	end
 
 	if siriusValues.enableExperienceSync then
@@ -3924,8 +3550,8 @@ end)
 
 homeContainer.Interactions.Discord.Interact.MouseButton1Click:Connect(function()
 	if setclipboard then 
-		originalSetClipboard("https://sirius.menu/discord")
-		queueNotification("Discord Invite Copied", "We've set your clipboard to the Sirius discord invite.", 4335479121)
+		originalSetClipboard("https://discord.gg/qDPBZMBSnB")
+		queueNotification("Discord Invite Copied", "We've set your clipboard to the Creamy Hub discord invite.", 4335479121)
 	else
 		queueNotification("Unable to copy Discord invite", "Missing setclipboard() function, can't set data to your clipboard.", 4335479658)
 	end
@@ -3956,11 +3582,6 @@ for _, button in ipairs(scriptsPanel.Interactions.Selection:GetChildren()) do
 		tweenService:Create(button, TweenInfo.new(.4,Enum.EasingStyle.Quint),  {Size = UDim2.new(0, origsize.X.Offset - 9, 0, origsize.Y.Offset - 6)}):Play()
 		task.wait(0.1)
 		tweenService:Create(button, TweenInfo.new(.25,Enum.EasingStyle.Quint),  {Size = origsize}):Play()
-
-		if button.Name == "Library" then
-			if not scriptSearch.Visible and not debounce then openScriptSearch() end
-		end
-		-- run action
 	end)
 end
 
@@ -4084,22 +3705,6 @@ userInputService.InputBegan:Connect(function(input, processed)
 		end
 	end
 
-	if input.KeyCode == Enum.KeyCode[checkSetting("Open ScriptSearch").current] and not processed and not debounce then
-		if scriptSearch.Visible then
-			closeScriptSearch()
-		else
-			openScriptSearch()
-		end
-	end
-
-	if input.KeyCode == Enum.KeyCode[checkSetting("Toggle smartBar").current] and not processed and not debounce then
-		if smartBarOpen then 
-			closeSmartBar()
-		else
-			openSmartBar()
-		end
-	end
-end)
 
 userInputService.InputEnded:Connect(function(input, processed)
 	if not checkSirius() then return end
@@ -4120,38 +3725,6 @@ end)
 camera:GetPropertyChangedSignal('ViewportSize'):Connect(function()
 	task.wait(.5)
 	updateSliderPadding()
-end)
-
-scriptSearch.SearchBox:GetPropertyChangedSignal("Text"):Connect(function()
-	if #scriptSearch.SearchBox.Text > 0 then
-		tweenService:Create(scriptSearch.Icon, TweenInfo.new(.5,Enum.EasingStyle.Quint),  {ImageColor3 = Color3.fromRGB(255, 255, 255)}):Play()
-		tweenService:Create(scriptSearch.SearchBox, TweenInfo.new(.5,Enum.EasingStyle.Quint),  {TextColor3 = Color3.fromRGB(255, 255, 255)}):Play()
-	else
-		tweenService:Create(scriptSearch.Icon, TweenInfo.new(.5,Enum.EasingStyle.Quint),  {ImageColor3 = Color3.fromRGB(150, 150, 150)}):Play()
-		tweenService:Create(scriptSearch.SearchBox, TweenInfo.new(.5,Enum.EasingStyle.Quint),  {TextColor3 = Color3.fromRGB(150, 150, 150)}):Play()
-	end
-end)
-
-scriptSearch.SearchBox.FocusLost:Connect(function(enterPressed)
-	tweenService:Create(scriptSearch.Icon, TweenInfo.new(.5,Enum.EasingStyle.Quint),  {ImageColor3 = Color3.fromRGB(150, 150, 150)}):Play()
-	tweenService:Create(scriptSearch.SearchBox, TweenInfo.new(.5,Enum.EasingStyle.Quint),  {TextColor3 = Color3.fromRGB(150, 150, 150)}):Play()
-
-	if #scriptSearch.SearchBox.Text > 0 then
-		if enterPressed then
-			local success, response = pcall(function()
-				searchScriptBlox(scriptSearch.SearchBox.Text)
-			end)
-		end
-	else
-		closeScriptSearch()
-	end
-end)
-
-scriptSearch.SearchBox.Focused:Connect(function()
-	if #scriptSearch.SearchBox.Text > 0 then
-		tweenService:Create(scriptSearch.Icon, TweenInfo.new(.5,Enum.EasingStyle.Quint),  {ImageColor3 = Color3.fromRGB(255, 255, 255)}):Play()
-		tweenService:Create(scriptSearch.SearchBox, TweenInfo.new(.5,Enum.EasingStyle.Quint),  {TextColor3 = Color3.fromRGB(255, 255, 255)}):Play()
-	end
 end)
 
 mouse.Move:Connect(function()
