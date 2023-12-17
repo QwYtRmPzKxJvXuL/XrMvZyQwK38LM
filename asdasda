@@ -1,5 +1,3 @@
-
-
 -- Ensure the game is loaded 
 if not game:IsLoaded() then
 	game.Loaded:Wait()
