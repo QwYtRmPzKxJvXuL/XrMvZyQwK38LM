@@ -2193,7 +2193,7 @@ local function ensureFrameProperties()
 	musicPanel.Visible = false
 	notificationContainer.Visible = true
 	playerlistPanel.Visible = false
-	Autofarm.Visible = false
+	scriptSearch.Visible = false
 	scriptsPanel.Visible = false
 	settingsPanel.Visible = false
 	smartBar.Visible = false
